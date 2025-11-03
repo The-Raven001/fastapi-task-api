@@ -1,9 +1,12 @@
 from fastapi import FastAPI
+from app.routes import tasks
 
 
 #examples:
 
 app = FastAPI()
+
+app.include_router(tasks.router)
 
 @app.get("/hello")
 def say_hello():
