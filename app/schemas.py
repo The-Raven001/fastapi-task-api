@@ -1,23 +1,33 @@
 from pydantic import BaseModel, EmailStr
+from typing import List
 
 class TaskBase(BaseModel):
     title: str
     description:  str | None = None
 
 class TaskCreate(TaskBase):
-    pass
+    completed: bool
 
 class Task(TaskBase):
     id: int
-    completed: bool
+    
+    class Config:
+        orm_mode = True
 
-class Config:
-    orm_mode = True
-
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     username: str
     email: EmailStr
+
+class UserCreate(UserBase):
     password: str
+
+class User(UserBase):
+    id: int
+    tasks: List[Task] = []
+
+    class Config:
+        orm_mode = True
+    
 
 """
     __tablename__ = "tasks"

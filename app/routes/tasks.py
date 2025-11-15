@@ -35,6 +35,7 @@ def update_item(id: int, updated_task: schemas.TaskCreate, db: Session = Depends
         raise HTTPException(status_code=404, detail="Task not found")
     task.title = updated_task.title
     task.description= updated_task.description
+    task.completed= updated_task.completed
 
     db.commit()
     db.refresh(task)

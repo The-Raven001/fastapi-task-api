@@ -1,12 +1,24 @@
 from fastapi import FastAPI
-from app.routes import tasks
+from app.routes import tasks, users
+from app.database import Base, engine
 
 
-#examples:
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.include_router(tasks.router)
+app.include_router(users.router)
+
+@app.get("/")
+def home():
+    return {"message": "This is just the landing page"}
+
+
+#To start running this api you have to type in the console: uvicorn app.main:app --reload
+
+"""
+examples:
 
 @app.get("/hello")
 def say_hello():
@@ -24,7 +36,4 @@ def get_test(user_id: int):
 #example of sending queries:
 @app.get("/search")
 def search(term: str, limit: int = 10):
-    return {"term": term, "limit": limit}
-
-
-#To start running this api you have to type in the console: uvicorn main:app --reload
+    return {"term": term, "limit": limit}"""
