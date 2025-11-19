@@ -3,6 +3,7 @@ from app.database import get_db
 from sqlalchemy.orm import Session
 from app import models, schemas
 from app.utils import hash, verify
+from app.routes.token import create_access_token
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -53,3 +54,22 @@ def delete_user(id: int, db: Session = Depends(get_db)):
     db.delete(user)
     db.commit()
     return{"message": "User has been deleted"}
+
+#Login
+
+def get_user_by_email(email: str, db:Session = Depends(get_db)):
+    return db.query(models.User).filter(models.User.email == email).first()
+
+@router.post("/login", response_model=schemas.Token)
+def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = get_user_by_email(db, user_credentials.email)
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    if not verify(user_credentials.password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    access_token = create_access_token({"sub": user.email})
+
+    return {"access_token": access_token, "token_type": "bearer"}
