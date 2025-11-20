@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.utils import hash, verify
 from app.routes.token import create_access_token
+from .auth import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -57,7 +58,7 @@ def delete_user(id: int, db: Session = Depends(get_db)):
 
 #Login
 
-def get_user_by_email(email: str, db:Session = Depends(get_db)):
+def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 @router.post("/login", response_model=schemas.Token)
@@ -73,3 +74,7 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": user.email})
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/profile")
+def read_profile(current_user: str = Depends(get_current_user)):
+    return {"message": "This is protected!", "user": current_user}
