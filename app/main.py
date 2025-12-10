@@ -15,7 +15,9 @@ def home():
     return {"message": "This is just the landing page"}
 
 
-#To start running this api you have to type in the console: uvicorn app.main:app --reload
+#To start running this api you have to type in the console:
+#1 .\venv\Scripts\activate 
+#2 uvicorn app.main:app --reload
 
 """
 examples:
