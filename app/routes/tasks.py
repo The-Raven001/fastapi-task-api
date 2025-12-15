@@ -28,7 +28,7 @@ def create_task(
 @router.get("/", response_model=list[schemas.Task], status_code=201)
 def get_tasks(db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)):
-    return db.query(models.Task).filter(models.Task.ownew_id == current_user.id).all()
+    return db.query(models.Task).filter(models.Task.owner_id == current_user.id).all()
 
 @router.get("/{id}", response_model=schemas.TaskBase)
 def get_task(id: int, 
@@ -60,11 +60,19 @@ def update_item(id: int, updated_task: schemas.TaskCreate, db: Session = Depends
 
 #Delete task
 
-@router.delete("/{id}", response_model=schemas.Task)
-def delete_task(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
-    task = db.query(models.Task).filter(models.Task.id == id, models.Task.owner_id == current_user.id).first()
+@router.delete("/{id}", status_code=204)
+def delete_task(
+    id: int, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_user)):
+
+    task = db.query(models.Task).filter(
+        models.Task.id == id, 
+        models.Task.owner_id == current_user.id).first()
     if not task:
         raise HTTPException(status_code=404, detail="task not found")
     db.delete(task)
     db.commit()
     return {"message": "Task deleted successfully"}
+
+    #if you use 200 the line above will show.

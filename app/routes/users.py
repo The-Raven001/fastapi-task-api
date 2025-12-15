@@ -76,5 +76,9 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/profile")
-def read_profile(current_user: str = Depends(get_current_user)):
-    return {"message": "This is protected!", "user": current_user}
+def read_profile(current_user = Depends(get_current_user)):
+    return {
+    "message": "This is protected!", 
+    "user": current_user.id,
+    "email": current_user.email
+    }
