@@ -9,7 +9,12 @@ from .auth import get_current_user
 router = APIRouter(prefix="/users", tags=["Users"])
 
 #Create user
-@router.post("/", response_model=schemas.User, status_code=201)
+@router.post("/", 
+    response_model=schemas.User, 
+    status_code=201,
+    summary="Creates a new user",
+    description="Creates a new user with privileges of creating and handling their own tasks"
+    )
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     hashed_password = hash(user.password)
     new_user = models.User(username=user.username, email=user.email, hashed_password=hashed_password)
@@ -19,11 +24,18 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 #Get users all / individually
-@router.get("/", response_model=list[schemas.User], status_code=201)
+@router.get("/", 
+    response_model=list[schemas.User], 
+    status_code=201,
+    summary="Retrieves data of all users",
+    description="Retrieves the the username, email, tasks, and user id of all users.")
 def get_users(db: Session = Depends(get_db)):
     return db.query(models.User).all()
 
-@router.get("/{id}", response_model=schemas.User)
+@router.get("/{id}", 
+    response_model=schemas.User,
+    summary="Individually retrieves all the data of a user",
+    description="Retrieves the username, email, and tasks of a given user.")
 def get_user(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
@@ -31,7 +43,10 @@ def get_user(id: int, db: Session = Depends(get_db)):
     return user
 
 #Update user
-@router.put("/{id}", response_model=schemas.User)
+@router.put("/{id}", 
+    response_model=schemas.User,
+    summary="Update data of a given user",
+    description="Update username, email, and/or password of a given user.")
 def update_user(id: int, updated_user: schemas.UserCreate, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
@@ -47,7 +62,10 @@ def update_user(id: int, updated_user: schemas.UserCreate, db: Session = Depends
 
 #Delete user
 
-@router.delete("/{id}", response_model=schemas.User)
+@router.delete("/{id}", 
+    response_model=schemas.User,
+    summary="Deletes all the data of a given user",
+    description="Deletes username, email, password, and tasks of a given user.")
 def delete_user(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
@@ -61,7 +79,10 @@ def delete_user(id: int, db: Session = Depends(get_db)):
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
-@router.post("/login", response_model=schemas.Token)
+@router.post("/login", 
+    response_model=schemas.Token,
+    summary="Authentication route",
+    description="Authentication route for every user with an existing account")
 def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     user = get_user_by_email(db, user_credentials.email)
 
