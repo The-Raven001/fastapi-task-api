@@ -21,3 +21,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+"""
+Provides a database session.
+
+- Opens a new SQLAlchemy session
+- Ensures the session is closed after request completion
+
+Yields:
+    Session: SQLAlchemy database session
+"""

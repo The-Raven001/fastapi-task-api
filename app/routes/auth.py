@@ -36,3 +36,15 @@ def get_current_user(
         raise credentials_exception
     
     return user
+
+"""
+Validates JWT access token and returns the authenticated user.
+
+    - Decodes the JWT token
+    - Extracts the user ID from the payload
+    - Verifies the user exists and is active
+
+    Raises:
+        HTTPException(401): If token is invalid or expired
+
+"""
