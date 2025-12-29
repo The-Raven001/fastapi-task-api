@@ -1,0 +1,39 @@
+# Task Manger API
+
+A Restful API built with FastAPI that allows users to manage tasks.
+Each task belongs to a user and requires authentication via JWT.
+
+## Setup
+
+```bash
+git clone <repo>
+cd fastapi-task-api
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+Create .env:
+
+DATABASE_URL=postgresql://user:password@localhost/dbname
+SECRET_KEY=your-secret
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+run:
+
+uvicorn app.main:app --reload
+
+---
+
+### How does auth work?
+
+## Authentication
+
+- Login returns a JWT access token
+- Token must be sent in Authorization header:
+
+Authorization: Bearer <token>
+
+## API Docs
+
+- Swagger UI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
